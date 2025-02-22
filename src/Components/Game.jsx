@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { baseURL, cars } from "../Constants";
+import { baseURL } from "../Constants";
 import { motion } from "framer-motion";
 import CarCard from "./CarCard";
 import WinnerModal from "./WinnerModal";
 import { useDisclosure } from "@chakra-ui/react";
 
-function Game() {
+function Game({ cars }) {
   const [carA, setCarA] = useState(
     { ...cars[0], maxHealth: cars[0].health } || {}
   );
@@ -80,13 +80,7 @@ function Game() {
   };
   useEffect(() => {
     setTimeout(() => {
-      if (carA.health <= 0) {
-        alert(`${carB.name} won!`);
-        onOpen();
-      } else if (carB.health <= 0) {
-        alert(`${carA.name} won!`);
-        onOpen();
-      }
+      if (carA.health <= 0 || carB.health <= 0) onOpen();
     }, 500);
   }, [hasAttacked]);
   return (
@@ -95,41 +89,6 @@ function Game() {
         🚗 Turbo Clash Derby 💥
       </h1>
 
-      {/* <div className="flex w-full ">
-        {carImages.map((car, key) => (
-          <div className={`w-[${key % 2 === 0 ? car.health : car.health}px]`}>
-            <img className={`max-w-[120px]`} src={car?.url} />
-          </div>
-        ))}
-      </div> */}
-      <div className="flex w-100% h-[100px] ">
-        {carImages.map((car, key) => (
-          <>
-            <div
-              className="relative"
-              // style={{
-              //   width:
-              //     key === 0 ? `${(carA.health / car.health) * 100}%` : "100%"
-              // }}
-              style={{
-                width:
-                  key === 0
-                    ? `${(carA.health / car.health) * 100}%`
-                    : `${(carB.health / car.health) * 100}%`
-              }}
-            >
-              <img
-                className={`absolute !max-w-[120px] ${
-                  key % 2 === 1 ? "some-class" : ""
-                } ${key === 0 ? "right-0" : "left-0"}`}
-                style={{ zIndex: key }}
-                src={car?.url}
-                alt="Car Image"
-              />
-            </div>
-          </>
-        ))}
-      </div>
       <p className="text-center text-lg mb-4">
         {defendingScreen
           ? `${defending} is defending...`
@@ -237,6 +196,12 @@ function Game() {
           </motion.div>
         ))}
       </div>
+
+      <WinnerModal
+        isOpen={isOpen}
+        winner={carA.health <= 0 ? carB?.name : carA?.name}
+        onClose={onClose}
+      />
     </div>
   );
 }

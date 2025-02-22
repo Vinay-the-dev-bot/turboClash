@@ -10,13 +10,14 @@ const CarCard = ({
   DefendCar,
   index
 }) => {
+  console.log(car);
   return (
     <motion.div
       key={car.name}
       initial={{ scale: 0.9, opacity: 0 }}
       animate={{ scale: 1, opacity: 1 }}
       transition={{ duration: 0.5 }}
-      className={`p-6 rounded-lg shadow-lg text-center relative ${
+      className={`py-6 px-8 rounded-lg shadow-lg text-center relative ${
         defending === car.name
           ? "bg-blue-700 animate-pulse"
           : attacking === car.name
@@ -24,11 +25,24 @@ const CarCard = ({
           : "bg-gray-800"
       }`}
     >
-      <div className="relative w-full h-6 bg-gray-300 rounded-md mt-2 overflow-hidden">
+      <div className="relative w-full h-6 bg-gray-300 rounded-md mt-2 overflow-visible">
         <div
-          className="h-full bg-red-500 transition-all duration-500"
-          style={{ width: `${(car.health / car.maxHealth) * 100}%` }}
-        ></div>
+          className="h-full relative bg-green-500 rounded-md transition-all duration-500"
+          style={{
+            width: `${
+              (car.health / car.maxHealth) * 100 < 0
+                ? 0
+                : (car.health / car.maxHealth) * 100
+            }%`
+          }}
+        >
+          <img
+            className={`absolute !max-w-[60px] !min-w-[60px] !max-h-[25px] !min-h-[25px] top-0 right-[-30px]`}
+            style={{ zIndex: index }}
+            src={car?.image}
+            alt="Car Image"
+          />
+        </div>
       </div>
       <h2 className="text-2xl font-semibold">{car.name}</h2>
       <p className="text-lg">❤️ Health: {car.health}</p>
